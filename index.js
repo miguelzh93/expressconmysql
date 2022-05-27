@@ -7,7 +7,7 @@ const mysql = require('mysql');
 app.use(express.json());
 require("dotenv").config();
 
-const { insertarUsuario, consultarUsuario, consultarUnUsuario } = require("./operacionesdb");
+const { insertarUsuario, consultarUsuario, consultarUnUsuario, actualizarUsuario, eliminarUnUsuario } = require("./operacionesdb");
 
 const connnection  =mysql.createConnection({
     host: process.env.DBHOST,
@@ -71,4 +71,32 @@ app.post('/v1/usuario', (req, res) => {
    
 });
 
+//Actualizar un usuario
+app.patch('/v1/usuario/:id', (req, res) => {
+    const { id } = req.params;
+    const json = req.body;    
+    console.log('legue' +  json.nacionalidad);
+    actualizarUsuario(connnection, json, id)
+    .then( (result) => {
+        console.log('actualizado');
+        res.status(200).json({regAfectados: result.affectedRows});
+    })
+    .catch((err) => {
+        console.error('Se murio ac');
+        res.status(400).json(err);
+    });
+   
+});
+
+
+app.delete('/v1/usuario/:id', (req, res) => {
+    let data = req.params.id;
+    eliminarUnUsuario(connnection, data)
+    .then((result) => {
+        res.status(200).json(result);
+    })
+    .catch((err) => {
+        res.status(400).json(err);
+    });
+});
 

@@ -36,4 +36,27 @@ function insertarUsuario(connection, data) {
     
 }
 
-module.exports = { insertarUsuario , consultarUsuario, consultarUnUsuario};
+function actualizarUsuario(connection, json, id) {
+    return new Promise(function(resolve, reject) {
+        let strSql = "UPDATE USUARIOS SET nombre = ? , nacionalidad = ? WHERE id  = " + id + "";
+        let query = mysql.format(strSql, [json.nombre, json.nacionalidad]);
+        connection.query(query, function (err, result) {
+            if (err) reject(err);
+            resolve(result);
+        });
+    });
+    
+}
+
+function eliminarUnUsuario(connection, id) {
+    return new Promise(function(resolve, reject) {
+        let strSql = "DELETE FROM USUARIOS WHERE ID = " + id;
+        console.log("aqui pase" + strSql);
+        connection.query(strSql, (err, result) => {
+            if (err) reject(err);
+            resolve(result);
+        });
+    });    
+}
+
+module.exports = { insertarUsuario , consultarUsuario, consultarUnUsuario, actualizarUsuario, eliminarUnUsuario};
